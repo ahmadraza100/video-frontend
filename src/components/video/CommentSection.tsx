@@ -45,8 +45,7 @@ export function CommentSection({ comments: initialComments }: CommentSectionProp
       {/* Comment input */}
       <form onSubmit={handleSubmitComment} className="flex gap-3">
         <Avatar className="h-8 w-8 shrink-0">
-          <AvatarImage src={currentUser.avatar} alt={currentUser.displayName} />
-          <AvatarFallback>{currentUser.displayName.charAt(0)}</AvatarFallback>
+          <AvatarImage src={"emi"} alt={currentUser.displayName} />
         </Avatar>
         <div className="flex-1 flex gap-2">
           <Input

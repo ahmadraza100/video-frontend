@@ -1,7 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Search, Upload, Bell, Menu, X, LogOut } from "lucide-react";
+import { Upload, Menu, X, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
@@ -10,7 +9,7 @@ import { cn } from "@/lib/utils";
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  // search removed per request
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
@@ -32,24 +31,12 @@ export function Navbar() {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 shrink-0">
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-lg">V</span>
+              <span className="text-primary-foreground font-bold text-lg">B</span>
             </div>
-            <span className="font-bold text-xl hidden sm:block">VidShare</span>
+            <span className="font-bold text-xl hidden sm:block">BitClips</span>
           </Link>
 
-          {/* Search Bar - Desktop */}
-          <div className="hidden md:flex flex-1 max-w-md mx-4">
-            <div className="relative w-full">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Search videos..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 bg-secondary border-0 focus-visible:ring-1"
-              />
-            </div>
-          </div>
+          {/* Search removed to simplify header */}
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-1">
@@ -78,12 +65,7 @@ export function Navbar() {
               </Button>
             </Link>
             
-            <Button variant="ghost" size="icon" className="relative">
-              <Bell className="h-5 w-5" />
-              <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-destructive rounded-full text-[10px] text-destructive-foreground flex items-center justify-center">
-                3
-              </span>
-            </Button>
+            {/* Notifications removed to simplify header */}
 
             {/* User Profile Dropdown */}
             {user && (
@@ -134,19 +116,7 @@ export function Navbar() {
         {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="md:hidden border-t border-border py-4 animate-fade-in">
-            {/* Mobile Search */}
-            <div className="relative mb-4">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Search videos..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 bg-secondary border-0"
-              />
-            </div>
-
-            {/* Mobile Navigation Links */}
+            {/* Mobile Navigation Links (search removed) */}
             <nav className="flex flex-col gap-1">
               {navLinks.map((link) => (
                 <Link

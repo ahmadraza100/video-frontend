@@ -197,4 +197,29 @@ export const interactionAPI = {
     }),
 };
 
+// ========== COMMENT ENDPOINTS (new API paths) ==========
+export const commentAPI = {
+  // List comments (paginated)
+  getComments: (videoId: string, page = 1, limit = 20, sort = "recent") =>
+    apiClient.get<ApiResponse<any>>(`/videos/${videoId}/comments`, {
+      params: { page, limit, sort },
+    }),
+
+  // Create comment
+  createComment: (videoId: string, text: string) =>
+    apiClient.post<ApiResponse<any>>(`/videos/${videoId}/comments`, { text }),
+
+  // Update comment
+  updateComment: (videoId: string, commentId: string, text: string) =>
+    apiClient.put<ApiResponse<any>>(`/videos/${videoId}/comments/${commentId}`, { text }),
+
+  // Delete comment
+  deleteComment: (videoId: string, commentId: string) =>
+    apiClient.delete<ApiResponse<any>>(`/videos/${videoId}/comments/${commentId}`),
+
+  // Like / unlike (toggle) comment - server responds with liked state
+  toggleLikeComment: (videoId: string, commentId: string) =>
+    apiClient.post<ApiResponse<any>>(`/videos/${videoId}/comments/${commentId}/like`),
+};
+
 export default apiClient;

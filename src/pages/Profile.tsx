@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Settings, Grid, Heart, Edit, MoreHorizontal, Trash2, Pencil } from "lucide-react";
+import { Settings, Grid, Edit, MoreHorizontal, Trash2, Pencil } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { VideoCard } from "@/components/video/VideoCard";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -22,10 +22,9 @@ const Profile = () => {
   const { id } = useParams<{ id: string }>();
   const { toast } = useToast();
   const { user: authUser } = useAuth();
-  const { getProfile, updateProfile, followUser, unfollowUser } = useUsers();
+  const { getProfile, updateProfile } = useUsers();
   const { getUserVideos, deleteVideo } = useVideos();
 
-  const [isFollowing, setIsFollowing] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedVideoId, setSelectedVideoId] = useState<string | null>(null);
@@ -180,11 +179,7 @@ const Profile = () => {
     <Layout>
       {/* Cover Image */}
       <div className="relative h-48 md:h-64 bg-gradient-to-r from-primary/20 to-accent overflow-hidden">
-        <img
-          src={buildMediaUrl(user.coverImage) || undefined}
-          alt="Cover"
-          className="w-full h-full object-cover opacity-80"
-        />
+        
         <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
       </div>
 
@@ -217,14 +212,7 @@ const Profile = () => {
                         <Settings className="h-5 w-5" />
                       </Button>
                     </>
-                  ) : (
-                    <Button
-                      variant={isFollowing ? "secondary" : "default"}
-                      onClick={() => setIsFollowing(!isFollowing)}
-                    >
-                      {isFollowing ? "Following" : "Follow"}
-                    </Button>
-                  )}
+                  ) : null}
                 </div>
               </div>
             </div>
@@ -236,14 +224,6 @@ const Profile = () => {
           {/* Stats */}
           <div className="flex gap-6 mt-4">
             <div className="text-center">
-              <p className="font-bold text-lg">{formatCount(user.followers)}</p>
-              <p className="text-sm text-muted-foreground">Followers</p>
-            </div>
-            <div className="text-center">
-              <p className="font-bold text-lg">{formatCount(user.following)}</p>
-              <p className="text-sm text-muted-foreground">Following</p>
-            </div>
-            <div className="text-center">
               <p className="font-bold text-lg">{user.videosCount}</p>
               <p className="text-sm text-muted-foreground">Videos</p>
             </div>
@@ -252,7 +232,7 @@ const Profile = () => {
 
         {/* Tabs */}
         <Tabs defaultValue="videos" className="mb-8">
-          <TabsList className="w-full justify-start border-b border-border rounded-none bg-transparent h-auto p-0">
+            <TabsList className="w-full justify-start border-b border-border rounded-none bg-transparent h-auto p-0">
             <TabsTrigger
               value="videos"
               className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-6 py-3"
@@ -260,13 +240,7 @@ const Profile = () => {
               <Grid className="h-4 w-4 mr-2" />
               Videos
             </TabsTrigger>
-            <TabsTrigger
-              value="liked"
-              className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-6 py-3"
-            >
-              <Heart className="h-4 w-4 mr-2" />
-              Liked
-            </TabsTrigger>
+            {/* Liked tab removed to keep profile simple */}
           </TabsList>
 
           <TabsContent value="videos" className="mt-6">
@@ -323,11 +297,7 @@ const Profile = () => {
             )}
           </TabsContent>
 
-          <TabsContent value="liked" className="mt-6">
-            <div className="text-center py-16">
-              <p className="text-muted-foreground">Liked videos will appear here</p>
-            </div>
-          </TabsContent>
+          {/* liked tab removed to keep profile simple */}
         </Tabs>
       </div>
 

@@ -12,7 +12,7 @@ export function Footer() {
               <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
                 <span className="text-primary-foreground font-bold text-lg">V</span>
               </div>
-              <span className="font-bold text-xl">VidShare</span>
+              <span className="font-bold text-xl">BitClicks</span>
             </Link>
             <p className="text-sm text-muted-foreground mb-4">
               Share your videos with the world. Create, connect, and inspire.
@@ -68,7 +68,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-border mt-12 pt-8 text-center text-sm text-muted-foreground">
-          <p>© {new Date().getFullYear()} VidShare. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} BitClicks. All rights reserved.</p>
         </div>
       </div>
     </footer>

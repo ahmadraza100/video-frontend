@@ -1,28 +1,21 @@
 import { useState, useEffect } from "react";
-import { Search } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { VideoGrid } from "@/components/video/VideoGrid";
 import { CategoryFilter } from "@/components/video/CategoryFilter";
-import { Input } from "@/components/ui/input";
+// search UI removed to keep Explore simple
 import { useVideos } from "@/hooks/useVideos";
 import { mockVideos, type Video } from "@/lib/mockData";
 
 const Explore = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [searchQuery, setSearchQuery] = useState("");
   const [displayVideos, setDisplayVideos] = useState<Video[]>([]);
-  const { getVideos, searchVideos, loading } = useVideos();
+  const { getVideos, loading } = useVideos();
 
   // Fetch all videos on component mount and when category changes
   useEffect(() => {
     const fetchVideos = async () => {
       try {
-        let response;
-        if (searchQuery) {
-          response = await searchVideos(searchQuery, 1, 50);
-        } else {
-          response = await getVideos(1, 50, selectedCategory === "All" ? undefined : selectedCategory);
-        }
+        const response = await getVideos(1, 50, selectedCategory === "All" ? undefined : selectedCategory);
 
         // Handle both array and paginated response formats
         let videosArray: any[] = [];
@@ -69,10 +62,8 @@ const Explore = () => {
       }
     };
 
-    const delayTimer = setTimeout(fetchVideos, 300); // Debounce search
-
-    return () => clearTimeout(delayTimer);
-  }, [searchQuery, selectedCategory, getVideos, searchVideos]);
+    fetchVideos();
+  }, [selectedCategory, getVideos]);
 
   const filteredVideos = displayVideos;
 
@@ -85,17 +76,7 @@ const Explore = () => {
           <p className="text-muted-foreground">Discover videos from creators around the world</p>
         </div>
 
-        {/* Search */}
-        <div className="relative max-w-md mb-6">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            type="search"
-            placeholder="Search videos, tags, or creators..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 bg-secondary border-0"
-          />
-        </div>
+        {/* Search removed to simplify Explore page */}
 
         {/* Categories */}
         <div className="mb-8">

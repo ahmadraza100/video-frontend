@@ -78,6 +78,8 @@ const Auth = () => {
 
       try {
         await login(formData.username, formData.password);
+        window.location.href = "/";
+        window.location.reload();
         navigate("/");
       } catch (error) {
         console.error("Login error:", error);
@@ -92,7 +94,7 @@ const Auth = () => {
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 bg-secondary rounded-full px-4 py-2 mb-6">
             <Sparkles className="h-4 w-4 text-primary" />
-            <span className="text-sm font-medium">Welcome to VidShare</span>
+            <span className="text-sm font-medium">Welcome to BitClips</span>
           </div>
           <h1 className="text-3xl font-bold mb-2">
             {isSignup ? "Create Account" : "Welcome Back"}

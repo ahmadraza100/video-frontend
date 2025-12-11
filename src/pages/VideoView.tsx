@@ -1,18 +1,19 @@
 import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { Heart, MessageCircle, Share2, Bookmark, ChevronLeft, ChevronRight, X, Copy, Check } from "lucide-react";
+import { Heart, MessageCircle, Share2, Bookmark, ChevronLeft, ChevronRight, X, Copy, Check, Trash2 } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { VideoPlayer } from "@/components/video/VideoPlayer";
 import { CommentSection } from "@/components/video/CommentSection";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { mockVideos, mockUsers } from "@/lib/mockData";
 import { formatDistanceToNow } from "date-fns";
 import { useToast } from "@/components/ui/use-toast";
 import { buildMediaUrl } from "@/lib/utils";
 import { useVideos } from "@/hooks/useVideos";
+import { useAuth } from "@/hooks/useAuth";
 import { useInteractions } from "@/hooks/useInteractions";
 import { useUsers } from "@/hooks/useUsers";
 
@@ -20,18 +21,18 @@ const VideoView = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { getVideoById } = useVideos();
+  const { getVideoById, deleteVideo } = useVideos();
   const { likeVideo, unlikeVideo, bookmarkVideo, removeBookmark, addComment } = useInteractions();
   const { getProfile } = useUsers();
-
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
-  const [isFollowing, setIsFollowing] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [copied, setCopied] = useState(false);
   const [video, setVideo] = useState<any>(null);
   const [creator, setCreator] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const { user: authUser } = useAuth();
 
   const currentIndex = mockVideos.findIndex((v) => v.id === id);
   const prevVideo = currentIndex > 0 ? mockVideos[currentIndex - 1] : null;
@@ -157,6 +158,25 @@ const VideoView = () => {
     toast({ title: "Link copied!", description: "Video link copied to clipboard" });
   };
 
+  const handleDeleteVideo = async () => {
+    if (!video || !video._id) return;
+    try {
+      await deleteVideo(video._id);
+      toast({ title: "Deleted", description: "Video deleted successfully" });
+      setShowDeleteModal(false);
+      // Redirect to creator profile if available, otherwise home
+      const creatorId = typeof video.creatorId === 'object' ? video.creatorId._id : video.creatorId;
+      if (creatorId) {
+        navigate(`/profile/${creatorId}`);
+      } else {
+        navigate("/");
+      }
+    } catch (err) {
+      console.error("Error deleting video:", err);
+      toast({ title: "Error", description: "Failed to delete video", variant: "destructive" });
+    }
+  };
+
   return (
     <Layout showFooter={false}>
       <div className="container mx-auto px-4 py-6">
@@ -187,7 +207,7 @@ const VideoView = () => {
                 </Button>
               </div>
 
-              <VideoPlayer thumbnail={video.thumbnail} title={video.title} />
+              <VideoPlayer thumbnail={video.thumbnail} videoUrl={video.videoUrl} title={video.title} />
 
               {/* Action buttons */}
               <div className="flex items-center justify-around mt-4 py-3 bg-secondary rounded-xl">
@@ -198,10 +218,11 @@ const VideoView = () => {
                   <Heart className={`h-6 w-6 ${isLiked ? "fill-primary text-primary" : ""}`} />
                   <span className="text-xs font-medium">{formatCount((video.likes?.length || 0) + (isLiked ? 1 : 0))}</span>
                 </button>
-                <button className="flex flex-col items-center gap-1 text-muted-foreground hover:text-primary transition-colors">
-                  <MessageCircle className="h-6 w-6" />
-                  <span className="text-xs font-medium">{formatCount(video.comments?.length || 0)}</span>
-                </button>
+                  <button className="flex flex-col items-center gap-1 text-muted-foreground hover:text-primary transition-colors">
+                    <MessageCircle className="h-6 w-6" />
+                    <span className="text-xs font-medium">{formatCount(video.comments?.length || 0)}</span>
+                  </button>
+              
                 <button
                   onClick={handleShare}
                   className="flex flex-col items-center gap-1 text-muted-foreground hover:text-primary transition-colors"
@@ -234,17 +255,9 @@ const VideoView = () => {
                 </Avatar>
                 <div>
                   <p className="font-semibold group-hover:text-primary transition-colors">{String(video.creatorName || "Unknown")}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {creator && formatCount(creator.followers)} followers
-                  </p>
                 </div>
               </Link>
-              <Button
-                variant={isFollowing ? "secondary" : "default"}
-                onClick={() => setIsFollowing(!isFollowing)}
-              >
-                {isFollowing ? "Following" : "Follow"}
-              </Button>
+              {/* Follow removed to simplify UI */}
             </div>
 
             {/* Video info */}
@@ -303,6 +316,26 @@ const VideoView = () => {
               ))}
             </div>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Modal */}
+      <Dialog open={showDeleteModal} onOpenChange={setShowDeleteModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Video</DialogTitle>
+          </DialogHeader>
+          <p className="text-muted-foreground">
+            Are you sure you want to delete this video? This action cannot be undone.
+          </p>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowDeleteModal(false)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={handleDeleteVideo}>
+              Delete
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </Layout>

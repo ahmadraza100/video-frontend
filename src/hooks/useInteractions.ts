@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { interactionAPI } from "@/lib/api";
+import { interactionAPI, commentAPI } from "@/lib/api";
 import { useToast } from "@/components/ui/use-toast";
 
 export interface Comment {
@@ -105,7 +105,7 @@ export const useInteractions = () => {
   const addComment = useCallback(
     async (videoId: string, text: string) => {
       try {
-        const response = await interactionAPI.addComment(videoId, text);
+        const response = await commentAPI.createComment(videoId, text);
         const newComment = response.data.data as Comment;
         setComments((prev) => [newComment, ...prev]);
         toast({
@@ -116,7 +116,7 @@ export const useInteractions = () => {
       } catch (error: any) {
         toast({
           title: "Error",
-          description: "Failed to post comment",
+          description: error?.message || "Failed to post comment",
           variant: "destructive",
         });
         throw error;
@@ -128,7 +128,7 @@ export const useInteractions = () => {
   const deleteComment = useCallback(
     async (videoId: string, commentId: string) => {
       try {
-        await interactionAPI.deleteComment(videoId, commentId);
+        await commentAPI.deleteComment(videoId, commentId);
         setComments((prev) => prev.filter((c) => c._id !== commentId));
         toast({
           title: "Success",
@@ -137,7 +137,7 @@ export const useInteractions = () => {
       } catch (error: any) {
         toast({
           title: "Error",
-          description: "Failed to delete comment",
+          description: error?.message || "Failed to delete comment",
           variant: "destructive",
         });
         throw error;
@@ -149,7 +149,7 @@ export const useInteractions = () => {
   const likeComment = useCallback(
     async (videoId: string, commentId: string) => {
       try {
-        const response = await interactionAPI.likeComment(videoId, commentId);
+        const response = await commentAPI.toggleLikeComment(videoId, commentId);
         toast({
           title: "Success",
           description: "Comment liked!",
@@ -158,7 +158,7 @@ export const useInteractions = () => {
       } catch (error: any) {
         toast({
           title: "Error",
-          description: "Failed to like comment",
+          description: error?.message || "Failed to like comment",
           variant: "destructive",
         });
         throw error;
@@ -170,7 +170,8 @@ export const useInteractions = () => {
   const unlikeComment = useCallback(
     async (videoId: string, commentId: string) => {
       try {
-        const response = await interactionAPI.unlikeComment(videoId, commentId);
+        // New API uses the same toggle endpoint; call it and return its result
+        const response = await commentAPI.toggleLikeComment(videoId, commentId);
         toast({
           title: "Success",
           description: "Like removed",
@@ -179,7 +180,7 @@ export const useInteractions = () => {
       } catch (error: any) {
         toast({
           title: "Error",
-          description: "Failed to unlike comment",
+          description: error?.message || "Failed to unlike comment",
           variant: "destructive",
         });
         throw error;
