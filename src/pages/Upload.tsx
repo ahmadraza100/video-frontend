@@ -161,7 +161,7 @@ const Upload = () => {
         
         formDataToSend.append("thumbnail", canvasBlob, "thumbnail.jpg");
 
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/videos/upload`, {
+        const response = await fetch(`https://video-backend-769.azurewebsites.net/api/videos/upload`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
