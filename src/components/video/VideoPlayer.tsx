@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Play, Pause, Volume2, VolumeX, Maximize } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, buildMediaUrl } from "@/lib/utils";
 
 interface VideoPlayerProps {
   thumbnail: string;
@@ -20,7 +20,7 @@ export function VideoPlayer({ thumbnail, title, className }: VideoPlayerProps) {
       onMouseLeave={() => setShowControls(false)}
     >
       <img
-        src={thumbnail}
+        src={buildMediaUrl(thumbnail) || undefined}
         alt={title}
         className="w-full h-full object-cover"
       />

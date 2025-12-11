@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Heart, MessageCircle, Play } from "lucide-react";
 import { Video } from "@/lib/mockData";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { cn } from "@/lib/utils";
+import { cn, buildMediaUrl } from "@/lib/utils";
 
 interface VideoCardProps {
   video: Video;
@@ -24,7 +24,7 @@ export function VideoCard({ video, className }: VideoCardProps) {
       <div className="video-thumbnail">
         {video.thumbnail ? (
           <img
-            src={video.thumbnail}
+            src={buildMediaUrl(video.thumbnail) || undefined}
             alt={video.title}
             className="w-full h-full object-cover"
             loading="lazy"
@@ -50,7 +50,7 @@ export function VideoCard({ video, className }: VideoCardProps) {
         <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-foreground/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <div className="flex items-center gap-2 mb-2">
             <Avatar className="h-6 w-6 ring-2 ring-background">
-              <AvatarImage src={video.creatorAvatar} alt={video.creatorName} />
+              <AvatarImage src={buildMediaUrl(video.creatorAvatar) || undefined} alt={video.creatorName} />
               <AvatarFallback className="text-xs">{video.creatorName.charAt(0)}</AvatarFallback>
             </Avatar>
             <span className="text-xs font-medium text-background truncate">

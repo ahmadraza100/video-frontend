@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { categories, mockVideos } from "@/lib/mockData";
+import { buildMediaUrl } from "@/lib/utils";
 import { useToast } from "@/components/ui/use-toast";
 import { useVideos } from "@/hooks/useVideos";
 import { cn } from "@/lib/utils";
@@ -276,7 +277,7 @@ const Upload = () => {
             <div className="relative">
               <div className="aspect-video bg-foreground rounded-2xl overflow-hidden">
                 <img
-                  src={videoPreview}
+                  src={buildMediaUrl(videoPreview) || videoPreview || undefined}
                   alt="Video preview"
                   className="w-full h-full object-cover"
                 />
@@ -399,7 +400,7 @@ const Upload = () => {
                 {thumbnailPreview ? (
                   <div className="relative aspect-video bg-muted rounded-xl overflow-hidden">
                     <img
-                      src={thumbnailPreview}
+                      src={buildMediaUrl(thumbnailPreview) || thumbnailPreview || undefined}
                       alt="Thumbnail preview"
                       className="w-full h-full object-cover"
                     />

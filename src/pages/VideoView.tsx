@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { mockVideos, mockUsers } from "@/lib/mockData";
 import { formatDistanceToNow } from "date-fns";
 import { useToast } from "@/components/ui/use-toast";
+import { buildMediaUrl } from "@/lib/utils";
 import { useVideos } from "@/hooks/useVideos";
 import { useInteractions } from "@/hooks/useInteractions";
 import { useUsers } from "@/hooks/useUsers";
@@ -228,7 +229,7 @@ const VideoView = () => {
                 className="flex items-center gap-3 group"
               >
                 <Avatar className="h-12 w-12 ring-2 ring-transparent group-hover:ring-primary transition-all">
-                  <AvatarImage src={video.creatorAvatar || undefined} alt={String(video.creatorName || 'Creator')} />
+                  <AvatarImage src={buildMediaUrl(video.creatorAvatar) || undefined} alt={String(video.creatorName || 'Creator')} />
                   <AvatarFallback>{(typeof video.creatorName === 'string' && video.creatorName.length > 0) ? video.creatorName.charAt(0) : "?"}</AvatarFallback>
                 </Avatar>
                 <div>

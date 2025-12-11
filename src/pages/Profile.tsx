@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { mockVideos, mockUsers, currentUser, type Video } from "@/lib/mockData";
+import { buildMediaUrl } from "@/lib/utils";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { useUsers } from "@/hooks/useUsers";
@@ -180,7 +181,7 @@ const Profile = () => {
       {/* Cover Image */}
       <div className="relative h-48 md:h-64 bg-gradient-to-r from-primary/20 to-accent overflow-hidden">
         <img
-          src={user.coverImage}
+          src={buildMediaUrl(user.coverImage) || undefined}
           alt="Cover"
           className="w-full h-full object-cover opacity-80"
         />
@@ -193,7 +194,7 @@ const Profile = () => {
           <div className="flex flex-col md:flex-row md:items-end gap-4">
             {/* Avatar */}
             <Avatar className="h-28 w-28 md:h-36 md:w-36 ring-4 ring-background shadow-medium">
-              <AvatarImage src={user.avatar} alt={user.displayName} />
+              <AvatarImage src={buildMediaUrl(user.avatar) || undefined} alt={user.displayName} />
               <AvatarFallback className="text-3xl">{user.displayName.charAt(0)}</AvatarFallback>
             </Avatar>
 
