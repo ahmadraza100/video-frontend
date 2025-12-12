@@ -78,7 +78,7 @@ const Auth = () => {
 
       try {
         await login(formData.username, formData.password);
-        navigate("/");
+        window.location.href = "/";
       } catch (error) {
         console.error("Login error:", error);
       }
