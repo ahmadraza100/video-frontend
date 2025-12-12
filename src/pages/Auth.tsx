@@ -78,8 +78,6 @@ const Auth = () => {
 
       try {
         await login(formData.username, formData.password);
-        window.location.href = "/";
-        window.location.reload();
         navigate("/");
       } catch (error) {
         console.error("Login error:", error);
