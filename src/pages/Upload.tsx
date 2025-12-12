@@ -30,6 +30,7 @@ const Upload = () => {
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [videoPreview, setVideoPreview] = useState<string | null>(editingVideo?.thumbnail || null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(editingVideo?.thumbnail || null);
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
 
   const [formData, setFormData] = useState({
     title: editingVideo?.title || "",
@@ -87,8 +88,10 @@ const Upload = () => {
   const handleThumbnailInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
-      const url = URL.createObjectURL(files[0]);
+      const file = files[0];
+      const url = URL.createObjectURL(file);
       setThumbnailPreview(url);
+      setThumbnailFile(file);
     }
   };
 
@@ -137,30 +140,33 @@ const Upload = () => {
         const formDataToSend = new FormData();
         formDataToSend.append("video", videoFile);
         
-        // Generate thumbnail from video
-        // Create a placeholder thumbnail
-        // In production, you'd generate a frame from the video
-        const canvas = document.createElement("canvas");
-        canvas.width = 320;
-        canvas.height = 180;
-        const ctx = canvas.getContext("2d");
-        if (ctx) {
-          ctx.fillStyle = "#1a1a1a";
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-          ctx.fillStyle = "#ffffff";
-          ctx.font = "16px Arial";
-          ctx.textAlign = "center";
-          ctx.fillText("Video Thumbnail", 160, 90);
+        // If user provided a thumbnail image, use it. Otherwise generate a placeholder (canvas) thumbnail.
+        if (thumbnailFile) {
+          formDataToSend.append("thumbnail", thumbnailFile);
+        } else {
+          // Create a simple fallback thumbnail (placeholder). In production you might extract a frame instead.
+          const canvas = document.createElement("canvas");
+          canvas.width = 320;
+          canvas.height = 180;
+          const ctx = canvas.getContext("2d");
+          if (ctx) {
+            ctx.fillStyle = "#1a1a1a";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "16px Arial";
+            ctx.textAlign = "center";
+            ctx.fillText("Video Thumbnail", 160, 90);
+          }
+
+          // Convert canvas to blob synchronously for immediate append
+          const canvasBlob = await new Promise<Blob>((resolve) => {
+            canvas.toBlob((blob) => {
+              resolve(blob || new Blob());
+            }, "image/jpeg", 0.8);
+          });
+
+          formDataToSend.append("thumbnail", canvasBlob, "thumbnail.jpg");
         }
-        
-        // Convert canvas to blob synchronously for immediate append
-        const canvasBlob = await new Promise<Blob>((resolve) => {
-          canvas.toBlob((blob) => {
-            resolve(blob || new Blob());
-          }, "image/jpeg", 0.8);
-        });
-        
-        formDataToSend.append("thumbnail", canvasBlob, "thumbnail.jpg");
 
         const response = await fetch(`https://video-backend-769.azurewebsites.net/api/videos/upload`, {
           method: "POST",
