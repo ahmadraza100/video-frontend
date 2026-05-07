@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { currentUser } from "@/lib/mockData";
 import { formatDistanceToNow } from "date-fns";
+import { useUsers } from "@/hooks";
 
 interface CommentSectionProps {
   comments: Comment[];
@@ -14,6 +15,7 @@ interface CommentSectionProps {
 export function CommentSection({ comments: initialComments }: CommentSectionProps) {
   const [comments, setComments] = useState(initialComments);
   const [newComment, setNewComment] = useState("");
+  const { user } = useUsers();
 
   const handleSubmitComment = (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,9 +23,8 @@ export function CommentSection({ comments: initialComments }: CommentSectionProp
 
     const comment: Comment = {
       id: `c${Date.now()}`,
-      userId: currentUser.id,
-      userName: currentUser.displayName,
-      userAvatar: currentUser.avatar,
+      userName: user?.username || "Anonymous",
+      userAvatar: user?.username?.charAt(0) || "A",
       text: newComment,
       createdAt: new Date().toISOString(),
       likes: 0,

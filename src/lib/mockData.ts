@@ -18,7 +18,6 @@ export interface Video {
 
 export interface Comment {
   id: string;
-  userId: string;
   userName: string;
   userAvatar: string;
   text: string;

@@ -140,7 +140,7 @@ const Auth = () => {
                 <Input
                   id="displayName"
                   name="displayName"
-                  placeholder="John Doe"
+                  placeholder="User"
                   value={formData.displayName}
                   onChange={handleChange}
                   className="mt-1.5"
